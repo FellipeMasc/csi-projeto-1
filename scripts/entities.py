@@ -1,5 +1,4 @@
 import pygame
-
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
         self.game = game
@@ -67,21 +66,54 @@ class PhysicsEntity:
         surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
 
 class Player(PhysicsEntity):
-    def __init__(self, game, pos, size):
-        super().__init__(game, 'player', pos, size)
+    def __init__(self, game, pos, size, player_number):
+        super().__init__(game, 'player{}'.format(player_number), pos, size)
         self.air_time = 0
-
+        self.jumps = 1
+        self.health = 100
     def update(self, tilemap, movement=(0,0)):
         super().update(tilemap, movement=movement)
 
         self.air_time += 1
         if self.collisions['down']:
             self.air_time = 0
+            self.jumps = 1
+            
 
+        self.wall_slide = False
+        if (self.collisions['right'] or self.collisions['left']) and self.air_time > 4:
+           self.wall_slide = True 
+           self.velocity[1] = min(self.velocity[1], 0.5)
+        
+        
         if self.air_time > 4:
             self.set_action('jump')
         elif movement[0] != 0:
             self.set_action('run')
         else:
             self.set_action('idle')
-        
+    def jump(self):
+      if self.jumps:
+              self.velocity[1] = -3
+              self.jumps -= 1
+              self.air_time = 5
+              
+class HealthBar:
+    def __init__(self, game, player, player_number):
+        self.game = game
+        self.player = player
+        self.player_number = player_number
+        self.width = 100
+        self.height = 10
+        self.border_width = 1
+        self.x = 20 if player_number == 1 else 200
+        self.y = 20 
+
+    def update(self):
+        # Atualiza a largura da barra de vida com base na saúde atual do jogador
+        self.width = int((self.player.health / 100) * 100)
+
+    def render(self, surf):
+        # Desenha a barra de vida na tela
+        pygame.draw.rect(surf, (255, 0, 0), (self.x, self.y, self.width, self.height))  # Barra de vida vermelha
+
