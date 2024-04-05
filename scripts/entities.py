@@ -71,11 +71,34 @@ class Player(PhysicsEntity):
         self.air_time = 0
         self.jumps = 1
         self.health = 100
-    def update(self, tilemap, movement=(0,0)):
+        self.heath_bar = HealthBar(game, self, player_number)
+    def update(self, tilemap, other_player, movement=(0,0)):
         super().update(tilemap, movement=movement)
+        offset_bottom = 6
+        frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
+        entity_rect = self.rect()
+        if(entity_rect.colliderect(other_player.rect())):
+            if frame_movement[0] > 0 and entity_rect.bottom > other_player.rect().top + offset_bottom:
+                entity_rect.right = other_player.rect().left
+                self.collisions['right'] = True
+                self.pos[0] = entity_rect.x
+            if frame_movement[0] < 0 and entity_rect.bottom > other_player.rect().top + offset_bottom:
+                entity_rect.left = other_player.rect().right 
+                self.collisions['left'] = True
+                self.pos[0] = entity_rect.x
+            if frame_movement[1] > 0 and entity_rect.top < other_player.rect().top:
+                entity_rect.bottom = other_player.rect().top
+                self.collisions['down'] = True
+                self.pos[1] = entity_rect.y
+            if frame_movement[1] < 0:
+                self.collisions['up'] = True 
 
+
+        
+        
         self.air_time += 1
         if self.collisions['down']:
+            print(self.air_time)
             self.air_time = 0
             self.jumps = 1
             
@@ -85,7 +108,7 @@ class Player(PhysicsEntity):
            self.wall_slide = True 
            self.velocity[1] = min(self.velocity[1], 0.5)
         
-        
+        print(self.action)
         if self.air_time > 4:
             self.set_action('jump')
         elif movement[0] != 0:
@@ -97,6 +120,9 @@ class Player(PhysicsEntity):
               self.velocity[1] = -3
               self.jumps -= 1
               self.air_time = 5
+    def render(self, surf, offset=(0, 0)):
+        self.heath_bar.render(surf)
+        return super().render(surf, offset)
               
 class HealthBar:
     def __init__(self, game, player, player_number):
@@ -110,10 +136,8 @@ class HealthBar:
         self.y = 20 
 
     def update(self):
-        # Atualiza a largura da barra de vida com base na saúde atual do jogador
         self.width = int((self.player.health / 100) * 100)
 
     def render(self, surf):
-        # Desenha a barra de vida na tela
-        pygame.draw.rect(surf, (255, 0, 0), (self.x, self.y, self.width, self.height))  # Barra de vida vermelha
+        pygame.draw.rect(surf, (255, 0, 0), (self.x, self.y, self.width, self.height))  
 
