@@ -1,7 +1,7 @@
 import sys
 import pygame
 from scripts.utils import load_image, load_images, Animation
-from scripts.entities import PhysicsEntity, Player, HealthBar
+from scripts.entities import PhysicsEntity, Player
 from scripts.tilemap import Tilemap
 
 class Game:
@@ -11,7 +11,8 @@ class Game:
         pygame.display.set_caption("ITA Fight Club")
         self.screen = pygame.display.set_mode((640, 480))
         self.display = pygame.Surface((320, 240))
-
+        self.img = pygame.image.load('data/images/clouds/cloud_1.png')
+        self.img.set_colorkey((0,0,0))
         self.clock = pygame.time.Clock()
 
         self.movement_p1 = [False, False]
@@ -38,32 +39,30 @@ class Game:
 
         self.player1 = Player(self, (50, 50), (8, 15), 1)
         self.player2 = Player(self, (100, 50), (8, 15), 2)
-        self.player1_health_bar = HealthBar(self, self.player1, 1)
-        self.player2_health_bar = HealthBar(self, self.player2, 2)
+
         
         self.tilemap = Tilemap(self, tile_size=16)
 
-        self.scroll = [0, 0]
+        self.scroll_1 = [0, 0]
+        self.scroll_2 = [0, 0]
+        
 
     def run(self):
         while True:
             self.display.blit(self.assets['background'], (0, 0))
 
-            self.scroll[0] += (self.player1.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
-            self.scroll[1] += (self.player1.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
-            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
-            
+            self.scroll_1[0] += (self.player1.rect().centerx - self.display.get_width() / 2 - self.scroll_1[0]) / 30
+            self.scroll_1[1] += (self.player1.rect().centery - self.display.get_height() / 2 - self.scroll_1[1]) / 30
+            self.scroll_2[0] += (self.player2.rect().centerx - self.display.get_width() / 2 - self.scroll_2[0]) / 30
+            self.scroll_2[1] += (self.player2.rect().centery - self.display.get_height() / 2 - self.scroll_2[1]) / 30
+            render_scroll = (int(min(self.scroll_1[0], self.scroll_2[0])), int(min(self.scroll_1[1], self.scroll_2[1])))
             self.tilemap.render(self.display, offset=render_scroll)
 
-            self.player1.update(self.tilemap, (self.movement_p1[1] - self.movement_p1[0], 0))
             self.player1.render(self.display, offset=render_scroll)
-            self.player1_health_bar.update()
-            self.player1_health_bar.render(self.display)
+            self.player1.update(self.tilemap, self.player2, (self.movement_p1[1] - self.movement_p1[0], 0))
 
-            self.player2.update(self.tilemap, (self.movement_p2[1] - self.movement_p2[0], 0))
             self.player2.render(self.display, offset=render_scroll)
-            self.player2_health_bar.update()
-            self.player2_health_bar.render(self.display)
+            self.player2.update(self.tilemap,  self.player1, (self.movement_p2[1] - self.movement_p2[0], 0))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -93,7 +92,7 @@ class Game:
                         self.movement_p2[1] = False
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
-            pygame.display.update()  # Refresh on-screen display
-            self.clock.tick(60)  # wait until next frame (at 60 FPS)
+            pygame.display.update() 
+            self.clock.tick(60) 
 
 Game().run()
