@@ -17,6 +17,9 @@ class Game:
 
         self.movement_p1 = [False, False]
         self.movement_p2 = [False, False]
+        #punch, kick, special, cokespecial
+        self.attack_p1 = [False,False,False,False]
+        self.attack_p2 = [False,False,False,False]
 
         self.assets = {
             'decor': load_images('tiles/decor'),
@@ -30,11 +33,17 @@ class Game:
             'player1/jump': Animation(load_images('entities/player/jump')),
             'player1/slide': Animation(load_images('entities/player/slide')),
             'player1/wall_slide': Animation(load_images('entities/player/wall_slide')),
+            'player1/punch': Animation(load_images('entities/player/slide')),
+            'player1/jump_attack': Animation(load_images('entities/player/slide')),
+            'player1/kick': Animation(load_images('entities/player/wall_slide')),
             'player2/idle': Animation(load_images('entities/player/idle'), img_dur=6),
             'player2/run': Animation(load_images('entities/player/run'), img_dur=4),
             'player2/jump': Animation(load_images('entities/player/jump')),
             'player2/slide': Animation(load_images('entities/player/slide')),
             'player2/wall_slide': Animation(load_images('entities/player/wall_slide')),
+            'player2/punch': Animation(load_images('entities/player/slide')),
+            'player2/jump_attack': Animation(load_images('entities/player/slide')),
+            'player2/kick': Animation(load_images('entities/player/wall_slide'))
         }
 
         self.player1 = Player(self, (50, 50), (8, 15), 1)
@@ -59,10 +68,10 @@ class Game:
             self.tilemap.render(self.display, offset=render_scroll)
 
             self.player1.render(self.display, offset=render_scroll)
-            self.player1.update(self.tilemap, self.player2, (self.movement_p1[1] - self.movement_p1[0], 0))
+            self.player1.update(self.tilemap, self.player2, self.attack_p1, (self.movement_p1[1] - self.movement_p1[0], 0))
 
             self.player2.render(self.display, offset=render_scroll)
-            self.player2.update(self.tilemap,  self.player1, (self.movement_p2[1] - self.movement_p2[0], 0))
+            self.player2.update(self.tilemap,  self.player1,self.attack_p2, (self.movement_p2[1] - self.movement_p2[0], 0))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -73,10 +82,22 @@ class Game:
                         self.movement_p1[0] = True
                     if event.key == pygame.K_RIGHT:
                         self.movement_p1[1] = True
+                    if event.key == pygame.K_j:
+                        self.attack_p1[0] = True
+                    if event.key == pygame.K_k:
+                        self.attack_p1[1] = True
+                    if event.key == pygame.K_l:
+                        self.attack_p1[2] = True
                     if event.key == pygame.K_a:
                         self.movement_p2[0] = True
                     if event.key == pygame.K_d:
                         self.movement_p2[1] = True
+                    if event.key == pygame.K_z:
+                        self.attack_p2[0] = True
+                    if event.key == pygame.K_x:
+                        self.attack_p2[1] = True
+                    if event.key == pygame.K_c:
+                        self.attack_p2[2] = True
                     if event.key == pygame.K_UP:
                         self.player1.jump()
                     if event.key == pygame.K_w:
@@ -90,6 +111,18 @@ class Game:
                         self.movement_p2[0] = False
                     if event.key == pygame.K_d:
                         self.movement_p2[1] = False
+                    if event.key == pygame.K_j:
+                        self.attack_p1[0] = False
+                    if event.key == pygame.K_k:
+                        self.attack_p1[1] = False
+                    if event.key == pygame.K_l:
+                        self.attack_p1[2] = False
+                    if event.key == pygame.K_z:
+                        self.attack_p2[0] = False
+                    if event.key == pygame.K_x:
+                        self.attack_p2[1] = False
+                    if event.key == pygame.K_c:
+                        self.attack_p2[2] = False
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update() 
