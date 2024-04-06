@@ -72,17 +72,18 @@ class Player(PhysicsEntity):
         self.jumps = 1
         self.health = 100
         self.melee_attack = False
+        self.block = False
         self.heath_bar = HealthBar(game, self, player_number)
-    def update(self, tilemap, other_player,attack=[False,False,False,False], movement=(0,0)):
+    def update(self, tilemap, other_player,attack=[False,False,False,False], movement=(0,0), block = False):
         super().update(tilemap, movement=movement)
         offset_bottom = 6
         frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
         entity_rect = self.rect()
         other_rect = other_player.rect()
-        if(abs(entity_rect.left - other_rect.right) < 5 or abs(entity_rect.right - other_rect.left) > 5):
-            if(other_player.melee_attack):
-                print(self.health)
-                self.health = self.health - 1
+        if(abs(entity_rect.left - other_rect.right) < 3 or abs(entity_rect.right - other_rect.left) < 3):
+            print(entity_rect.top,other_rect.top)
+            if(other_player.melee_attack and abs(entity_rect.top - other_rect.top) < 8 and not self.block):
+                self.health = self.health - 0.1
                 self.heath_bar.update()
                 
         
@@ -128,12 +129,14 @@ class Player(PhysicsEntity):
             self.set_action('punch')
         elif attack[1]:
             self.set_action('kick')
+        elif block:
+            self.set_action('block')
         else:
             self.set_action('idle')
             
     def set_action(self, action):
         self.melee_attack = ["punch", "kick", "jump_attack"].count(action) > 0
-        # print(self.melee_attack)
+        self.block = action == "block"
         return super().set_action(action)        
             
             
