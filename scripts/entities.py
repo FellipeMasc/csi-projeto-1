@@ -71,23 +71,34 @@ class Player(PhysicsEntity):
         self.air_time = 0
         self.jumps = 1
         self.health = 100
+        self.melee_attack = False
+        self.block = False
         self.heath_bar = HealthBar(game, self, player_number)
-    def update(self, tilemap, other_player, movement=(0,0)):
+    def update(self, tilemap, other_player,attack=[False,False,False,False], movement=(0,0), block = False):
         super().update(tilemap, movement=movement)
         offset_bottom = 6
         frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
         entity_rect = self.rect()
-        if(entity_rect.colliderect(other_player.rect())):
-            if frame_movement[0] > 0 and entity_rect.bottom > other_player.rect().top + offset_bottom:
-                entity_rect.right = other_player.rect().left
+        other_rect = other_player.rect()
+        if(abs(entity_rect.left - other_rect.right) < 3 or abs(entity_rect.right - other_rect.left) < 3):
+            print(entity_rect.top,other_rect.top)
+            if(other_player.melee_attack and abs(entity_rect.top - other_rect.top) < 8 and not self.block):
+                self.health = self.health - 0.1
+                self.heath_bar.update()
+                
+        
+        
+        if(entity_rect.colliderect(other_rect)):
+            if frame_movement[0] > 0 and entity_rect.bottom > other_rect.top + offset_bottom:
+                entity_rect.right = other_rect.left
                 self.collisions['right'] = True
                 self.pos[0] = entity_rect.x
-            if frame_movement[0] < 0 and entity_rect.bottom > other_player.rect().top + offset_bottom:
-                entity_rect.left = other_player.rect().right 
+            if frame_movement[0] < 0 and entity_rect.bottom > other_rect.top + offset_bottom:
+                entity_rect.left = other_rect.right 
                 self.collisions['left'] = True
                 self.pos[0] = entity_rect.x
-            if frame_movement[1] > 0 and entity_rect.top < other_player.rect().top:
-                entity_rect.bottom = other_player.rect().top
+            if frame_movement[1] > 0 and entity_rect.top < other_rect.top:
+                entity_rect.bottom = other_rect.top
                 self.collisions['down'] = True
                 self.pos[1] = entity_rect.y
             if frame_movement[1] < 0:
@@ -98,7 +109,6 @@ class Player(PhysicsEntity):
         
         self.air_time += 1
         if self.collisions['down']:
-            print(self.air_time)
             self.air_time = 0
             self.jumps = 1
             
@@ -108,21 +118,46 @@ class Player(PhysicsEntity):
            self.wall_slide = True 
            self.velocity[1] = min(self.velocity[1], 0.5)
         
-        print(self.action)
         if self.air_time > 4:
-            self.set_action('jump')
+            if(attack[0] or attack[1]):
+                self.set_action('jump_attack')
+            else:
+                self.set_action('jump')
         elif movement[0] != 0:
             self.set_action('run')
+        elif attack[0]:
+            self.set_action('punch')
+        elif attack[1]:
+            self.set_action('kick')
+        elif block:
+            self.set_action('block')
         else:
             self.set_action('idle')
+            
+    def set_action(self, action):
+        self.melee_attack = ["punch", "kick", "jump_attack"].count(action) > 0
+        self.block = action == "block"
+        return super().set_action(action)        
+            
+            
     def jump(self):
       if self.jumps:
               self.velocity[1] = -3
               self.jumps -= 1
               self.air_time = 5
+              
+    def dash(self):
+        if not self.dashing:
+            if self.flip:
+                self.dashing = -60
+            else:
+                self.dashing = 60          
+    
     def render(self, surf, offset=(0, 0)):
         self.heath_bar.render(surf)
         return super().render(surf, offset)
+    
+    
               
 class HealthBar:
     def __init__(self, game, player, player_number):
