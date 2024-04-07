@@ -102,7 +102,7 @@ class Player(PhysicsEntity):
         self.player_number = player_number
         self.heath_bar = HealthBar(game, self, player_number)
         self.especial_bar = EspecialBar(game,self,player_number)
-        self.impact_force = 2
+        self.impact_force = 1.5
         
     
 
@@ -131,10 +131,8 @@ class Player(PhysicsEntity):
                 other_player.especial_bar.update()
             
                 if other_player.flip:
-                   print("Colisão detectada")
                    self.velocity[0] -= self.impact_force
                 else:
-                   print("Colisião detectada")
                    self.velocity[0] += self.impact_force
 
 
