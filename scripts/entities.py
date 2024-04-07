@@ -102,6 +102,9 @@ class Player(PhysicsEntity):
         self.player_number = player_number
         self.heath_bar = HealthBar(game, self, player_number)
         self.especial_bar = EspecialBar(game,self,player_number)
+        self.impact_force = 2
+        
+    
 
     def update(
         self,
@@ -110,6 +113,7 @@ class Player(PhysicsEntity):
         attack=[False, False, False, False],
         movement=(0, 0),
         block=False,
+          
     ):
         super().update(tilemap, movement=movement)
         offset_bottom = 6
@@ -121,19 +125,29 @@ class Player(PhysicsEntity):
         other_rect = other_player.rect()
         if abs(entity_rect.left - other_rect.right) < 3 or abs(entity_rect.right - other_rect.left) < 3:
             if other_player.melee_attack and abs(entity_rect.top - other_rect.top) < 8 and not self.block:
-                self.health = self.health - 0.1
+                self.health = self.health - 1
                 other_player.stamina = min(100,other_player.stamina + 1)
                 self.heath_bar.update()
                 other_player.especial_bar.update()
+            
+                if other_player.flip:
+                   print("Colisão detectada")
+                   self.velocity[0] -= self.impact_force
+                else:
+                   print("Colisião detectada")
+                   self.velocity[0] += self.impact_force
+
 
         if entity_rect.colliderect(other_rect):
             if frame_movement[0] > 0 and entity_rect.bottom > other_rect.top + offset_bottom:
                 entity_rect.right = other_rect.left
                 self.collisions["right"] = True
+                other_player.collisions["left"] = True
                 self.pos[0] = entity_rect.x
             if frame_movement[0] < 0 and entity_rect.bottom > other_rect.top + offset_bottom:
                 entity_rect.left = other_rect.right
                 self.collisions["left"] = True
+                other_player.collisions["right"] = True
                 self.pos[0] = entity_rect.x
             if frame_movement[1] > 0 and entity_rect.top < other_rect.top:
                 entity_rect.bottom = other_rect.top
@@ -186,6 +200,8 @@ class Player(PhysicsEntity):
             if self.rect().collidepoint(particle.pos) and particle.player_number != self.player_number:
                 self.health = self.health - 10
                 self.heath_bar.update()
+        
+       
         
 
     def set_action(self, action):
