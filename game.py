@@ -58,7 +58,7 @@ class Game:
         self.particles = []
 
         self.player1.flip = True
-        
+
         self.scroll_1 = [0, 0]
         self.scroll_2 = [0, 0]
 
@@ -109,34 +109,36 @@ class Game:
                         self.movement_p1[0] = True
                     if event.key == pygame.K_RIGHT:
                         self.movement_p1[1] = True
+                    if event.key == pygame.K_UP:
+                        self.player1.jump()
                     if event.key == pygame.K_j:
                         self.attack_p1[0] = True
                     if event.key == pygame.K_k:
                         self.attack_p1[1] = True
                     if event.key == pygame.K_l:
                         self.player1.especial_attack(self)
+                    if event.key == pygame.K_n:
+                        self.block_p1 = True
+                    if event.key == pygame.K_m:
+                        self.player1.dash()
+
+                    if event.key == pygame.K_w:
+                        self.player2.jump()
                     if event.key == pygame.K_a:
                         self.movement_p2[0] = True
                     if event.key == pygame.K_d:
                         self.movement_p2[1] = True
-                    if event.key == pygame.K_z:
+                    if event.key == pygame.K_r:
                         self.attack_p2[0] = True
-                    if event.key == pygame.K_x:
+                    if event.key == pygame.K_t:
                         self.attack_p2[1] = True
-                    if event.key == pygame.K_c:
+                    if event.key == pygame.K_g:
                         self.player2.especial_attack(self)
-                    if event.key == pygame.K_UP:
-                        self.player1.jump()
-                    if event.key == pygame.K_w:
-                        self.player2.jump()
-                    if event.key == pygame.K_n:
-                        self.block_p1 = True
                     if event.key == pygame.K_v:
                         self.block_p2 = True
-                    if event.key == pygame.K_m:
-                        self.player1.dash()
                     if event.key == pygame.K_f:
                         self.player2.dash()
+
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement_p1[0] = False
@@ -150,9 +152,9 @@ class Game:
                         self.attack_p1[0] = False
                     if event.key == pygame.K_k:
                         self.attack_p1[1] = False
-                    if event.key == pygame.K_z:
+                    if event.key == pygame.K_r:
                         self.attack_p2[0] = False
-                    if event.key == pygame.K_x:
+                    if event.key == pygame.K_t:
                         self.attack_p2[1] = False
                     if event.key == pygame.K_n:
                         self.block_p1 = False
