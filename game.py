@@ -51,12 +51,14 @@ class Game:
             "player2/block": Animation(load_images("entities/player/wall_slide")),
         }
 
-        self.player1 = Player(self, (50, 50), (8, 15), 1)
-        self.player2 = Player(self, (100, 50), (8, 15), 2)
+        self.player1 = Player(self, (100, 50), (8, 15), 1)
+        self.player2 = Player(self, (50, 50), (8, 15), 2)
 
         self.tilemap = Tilemap(self, tile_size=16)
         self.particles = []
 
+        self.player1.flip = True
+        
         self.scroll_1 = [0, 0]
         self.scroll_2 = [0, 0]
 
@@ -131,9 +133,9 @@ class Game:
                         self.block_p1 = True
                     if event.key == pygame.K_v:
                         self.block_p2 = True
-                    if event.key == pygame.K_f:
-                        self.player1.dash()
                     if event.key == pygame.K_m:
+                        self.player1.dash()
+                    if event.key == pygame.K_f:
                         self.player2.dash()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
