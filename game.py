@@ -31,28 +31,18 @@ class Game:
             "player": load_image("entities/player.png"),
             "background": load_image("background.png"),
             "particle/particle": Animation(load_images("particles/particle"), img_dur=6, loop=False),
-            "player1/idle": Animation(load_images("entities/player/idle"), img_dur=6),
-            "player1/run": Animation(load_images("entities/player/run"), img_dur=4),
-            "player1/jump": Animation(load_images("entities/player/jump")),
-            "player1/slide": Animation(load_images("entities/player/slide")),
-            "player1/wall_slide": Animation(load_images("entities/player/wall_slide")),
-            "player1/punch": Animation(load_images("entities/player/slide")),
-            "player1/jump_attack": Animation(load_images("entities/player/slide")),
-            "player1/kick": Animation(load_images("entities/player/wall_slide")),
-            "player1/block": Animation(load_images("entities/player/wall_slide")),
-            "player2/idle": Animation(load_images("entities/player/idle"), img_dur=6),
-            "player2/run": Animation(load_images("entities/player/run"), img_dur=4),
-            "player2/jump": Animation(load_images("entities/player/jump")),
-            "player2/slide": Animation(load_images("entities/player/slide")),
-            "player2/wall_slide": Animation(load_images("entities/player/wall_slide")),
-            "player2/punch": Animation(load_images("entities/player/slide")),
-            "player2/jump_attack": Animation(load_images("entities/player/slide")),
-            "player2/kick": Animation(load_images("entities/player/wall_slide")),
-            "player2/block": Animation(load_images("entities/player/wall_slide")),
+            "player/farol/idle": Animation(load_images("entities/player/farol/idle"), img_dur=6),
+            "player/farol/run": Animation(load_images("entities/player/farol/run"), img_dur=4),
+            "player/farol/jump": Animation(load_images("entities/player/farol/jump")),
+            "player/farol/punch": Animation(load_images("entities/player/farol/punch")),
+            "player/farol/jump_attack": Animation(load_images("entities/player/farol/kick")),
+            "player/farol/kick": Animation(load_images("entities/player/farol/kick")),
+            "player/farol/block": Animation(load_images("entities/player/farol/block")),
+            "player/farol/especial": Animation(load_images("entities/player/farol/especial"),img_dur=6, loop=False),
         }
 
-        self.player1 = Player(self, (50, 50), (8, 15), 1)
-        self.player2 = Player(self, (100, 50), (8, 15), 2)
+        self.player1 = Player(self, (50, 50), (8, 15),1, "farol")
+        self.player2 = Player(self, (100, 50), (8, 15),2, "farol")
 
         self.tilemap = Tilemap(self, tile_size=16)
         self.particles = []

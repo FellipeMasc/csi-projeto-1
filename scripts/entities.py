@@ -90,14 +90,15 @@ class PhysicsEntity:
 
 
 class Player(PhysicsEntity):
-    def __init__(self, game, pos, size, player_number):
-        super().__init__(game, "player{}".format(player_number), pos, size)
+    def __init__(self, game, pos, size, player_number, player_name):
+        super().__init__(game, "player/" +player_name, pos, size)
         self.air_time = 0
         self.jumps = 1
         self.health = 100
         self.stamina = 0
         self.melee_attack = False
         self.block = False
+        self.especial_frame = False
         self.dashing = 0
         self.player_number = player_number
         self.heath_bar = HealthBar(game, self, player_number)
@@ -136,9 +137,13 @@ class Player(PhysicsEntity):
                 self.collisions["left"] = True
                 self.pos[0] = entity_rect.x
             if frame_movement[1] > 0 and entity_rect.top < other_rect.top:
+                print("bottom",entity_rect.bottom, other_rect.bottom)
+                print("top",entity_rect.top, other_rect.top)
                 entity_rect.bottom = other_rect.top
                 self.collisions["down"] = True
+                print("antes", self.pos[1], other_player.pos[1])
                 self.pos[1] = entity_rect.y
+                print("depois", self.pos[1], other_player.pos[1])
             if frame_movement[1] < 0:
                 self.collisions["up"] = True
 
@@ -146,12 +151,12 @@ class Player(PhysicsEntity):
         if self.collisions["down"]:
             self.air_time = 0
             self.jumps = 1
-
         self.wall_slide = False
         if (self.collisions["right"] or self.collisions["left"]) and self.air_time > 4:
             self.wall_slide = True
             self.velocity[1] = min(self.velocity[1], 0.5)
-
+            
+            
         if self.air_time > 4:
             if attack[0] or attack[1]:
                 self.set_action("jump_attack")
@@ -165,7 +170,10 @@ class Player(PhysicsEntity):
             self.set_action("kick")
         elif block:
             self.set_action("block")
+        elif self.especial_frame and not self.animation.done:
+            self.set_action("especial")
         else:
+            self.especial_frame = False
             self.set_action("idle")
 
         if self.dashing > 0:
@@ -210,11 +218,14 @@ class Player(PhysicsEntity):
     def especial_attack(self, game):
         if(self.stamina == 100):
             velocityx = -5 if self.flip else 5
-            game.particles.append(Particles(game,'particle', [self.rect().centerx, self.rect().centery],self.player_number, [velocityx, 0]))
+            game.particles.append(Particles(game,'particle', [self.rect().centerx, self.rect().centery - 20],self.player_number, [velocityx, 0]))
             self.stamina = 0
             self.especial_bar.update()
+            self.especial_frame = True
+            
 
     def render(self, surf, offset=(0, 0)):
         self.heath_bar.render(surf)
         self.especial_bar.render(surf)
-        return super().render(surf, offset)
+        return super().render(surf, (offset[0], offset[1] + 17))
+        # return super().render(surf, (offset[0], offset[1] - 5))
