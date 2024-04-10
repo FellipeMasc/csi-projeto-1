@@ -18,7 +18,7 @@ class PhysicsEntity:
         }
 
         self.action = ""
-        self.anim_offset = (-3, -3)
+        self.anim_offset = (-3, -8)
         self.flip = False
         self.set_action("idle")
 
