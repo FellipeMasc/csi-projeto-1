@@ -10,7 +10,7 @@ class Game:
         pygame.init()
 
         pygame.display.set_caption("ITA Fight Club")
-        self.screen = pygame.display.set_mode((640, 480))
+        self.screen = pygame.display.set_mode((1280, 960))
         self.display = pygame.Surface((320, 240))
         self.img = pygame.image.load("data/images/clouds/cloud_1.png")
         self.img.set_colorkey((0, 0, 0))
@@ -30,7 +30,11 @@ class Game:
             "stone": load_images("tiles/stone"),
             "player": load_image("entities/player.png"),
             "background": load_image("background.png"),
+            "lago": load_image("lago.jpeg"),
+            "salaonegro": load_image("salaonegro.jpeg"),
+            # "background": load_image("background.png"),
             "particle/particle": Animation(load_images("particles/particle"), img_dur=6, loop=False),
+            "particle/sheldon": Animation(load_images("particles/sheldon"), img_dur=6, loop=False),
             "player/farol/idle": Animation(load_images("entities/player/farol/idle"), img_dur=6),
             "player/farol/run": Animation(load_images("entities/player/farol/run"), img_dur=4),
             "player/farol/jump": Animation(load_images("entities/player/farol/jump")),
@@ -39,10 +43,26 @@ class Game:
             "player/farol/kick": Animation(load_images("entities/player/farol/kick")),
             "player/farol/block": Animation(load_images("entities/player/farol/block")),
             "player/farol/especial": Animation(load_images("entities/player/farol/especial"),img_dur=6, loop=False),
+            "player/coquinha/idle": Animation(load_images("entities/player/coquinha/idle"), img_dur=6),
+            "player/coquinha/run": Animation(load_images("entities/player/coquinha/run"), img_dur=4),
+            "player/coquinha/jump": Animation(load_images("entities/player/coquinha/jump")),
+            "player/coquinha/punch": Animation(load_images("entities/player/coquinha/punch")),
+            "player/coquinha/jump_attack": Animation(load_images("entities/player/coquinha/kick")),
+            "player/coquinha/kick": Animation(load_images("entities/player/coquinha/kick")),
+            "player/coquinha/block": Animation(load_images("entities/player/coquinha/block")),
+            "player/coquinha/especial": Animation(load_images("entities/player/coquinha/especial"),img_dur=6, loop=False),
+            "player/calabresa/idle": Animation(load_images("entities/player/calabresa/idle"), img_dur=6),
+            "player/calabresa/run": Animation(load_images("entities/player/calabresa/run"), img_dur=4),
+            "player/calabresa/jump": Animation(load_images("entities/player/calabresa/jump")),
+            "player/calabresa/punch": Animation(load_images("entities/player/calabresa/punch")),
+            "player/calabresa/jump_attack": Animation(load_images("entities/player/calabresa/kick")),
+            "player/calabresa/kick": Animation(load_images("entities/player/calabresa/kick")),
+            "player/calabresa/block": Animation(load_images("entities/player/calabresa/block")),
+            "player/calabresa/especial": Animation(load_images("entities/player/calabresa/especial"),img_dur=6, loop=False),
         }
 
-        self.player1 = Player(self, (50, 50), (8, 15),1, "farol")
-        self.player2 = Player(self, (100, 50), (8, 15),2, "farol")
+        self.player1 = Player(self, (50, 50), (8, 15),1, "coquinha")
+        self.player2 = Player(self, (100, 50), (8, 15),2, "calabresa")
 
         self.tilemap = Tilemap(self)
         self.particles = []
@@ -52,7 +72,7 @@ class Game:
 
     def run(self):
         while True:
-            self.display.blit(self.assets["background"], (0, 0))
+            self.display.blit(self.assets["salaonegro"], (0, 0))
 
             # self.scroll_1[0] += (self.player1.rect().centerx - self.display.get_width() / 2 - self.scroll_1[0]) / 30
             self.scroll_1[1] += (self.player1.rect().centery - self.display.get_height() / 3 - self.scroll_1[1]) / 10
@@ -103,6 +123,8 @@ class Game:
                         self.attack_p1[1] = True
                     if event.key == pygame.K_l:
                         self.player1.especial_attack(self)
+                    if event.key == pygame.K_p:
+                        self.player1.plus(self)
                     if event.key == pygame.K_a:
                         self.movement_p2[0] = True
                     if event.key == pygame.K_d:
@@ -113,6 +135,8 @@ class Game:
                         self.attack_p2[1] = True
                     if event.key == pygame.K_c:
                         self.player2.especial_attack(self)
+                    if event.key == pygame.K_q:
+                        self.player2.plus(self)
                     if event.key == pygame.K_UP:
                         self.player1.jump()
                     if event.key == pygame.K_w:

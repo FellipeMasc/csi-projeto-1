@@ -20,7 +20,7 @@ def load_image(path, resize=False):
 
 def load_images(path):
     images = []
-    resize = True if path[0:15] == "entities/player" else False
+    resize = True if path[0:15] == "entities/player" or path[0:17] == "particles/sheldon" else False
     for img_name in sorted(os.listdir(BASE_IMG_PATH + path)):
         images.append(load_image(path + '/' + img_name, resize))
     return images
@@ -83,7 +83,7 @@ class EspecialBar:
 
 
 class Particles:
-    def __init__(self, game, p_type,pos, player_number, velocity=[0,0], frame = 0):
+    def __init__(self, game, p_type,pos, player_number, velocity=[0,0], frame = 0, flip = False):
         self.game = game
         self.player_number = player_number
         self.type = p_type
@@ -91,6 +91,7 @@ class Particles:
         self.velocity = list(velocity)
         self.animation = self.game.assets['particle/' + p_type].copy()
         self.animation.frame = frame
+        self.flip = flip
         
     
     def update(self):
@@ -108,7 +109,7 @@ class Particles:
         
     def render(self, surf, offset=(0,0)):
         img = self.animation.img()
-        surf.blit(img,(self.pos[0] - offset[0] - img.get_width() // 2, self.pos[1] - offset[1] - img.get_height() // 2))
+        surf.blit(pygame.transform.flip(img, self.flip, False),(self.pos[0] - offset[0] - img.get_width() // 2, self.pos[1] - offset[1] - img.get_height() // 2))
         
         
         

@@ -104,6 +104,7 @@ class Player(PhysicsEntity):
         self.heath_bar = HealthBar(game, self, player_number)
         self.especial_bar = EspecialBar(game,self,player_number)
         self.impact_force = 2
+        self.player_name = player_name
 
     def update(
         self,
@@ -202,13 +203,15 @@ class Player(PhysicsEntity):
                         8,
                         40,
                     )
-            if new_rect.collidepoint(particle.pos) and particle.player_number != self.player_number:
-                if other_player.flip:
-                   self.velocity[0] -= self.impact_force/1.2
-                else:
-                   self.velocity[0] += self.impact_force/1.2
-                self.health = self.health - 10
+            if new_rect.collidepoint(particle.pos) and particle.player_number != self.player_number and not self.block:
+                if particle.type != 'sheldon':
+                    if other_player.flip:
+                        self.velocity[0] -= self.impact_force * 2
+                    else:
+                        self.velocity[0] += self.impact_force * 2
+                self.health = self.health - 5
                 self.heath_bar.update()
+                self.game.particles.remove(particle)
         
 
     def set_action(self, action):
@@ -243,3 +246,19 @@ class Player(PhysicsEntity):
         self.heath_bar.render(surf)
         self.especial_bar.render(surf)
         return super().render(surf, (offset[0], offset[1] ))
+    
+    def plus(self,game):
+        if(self.stamina == 0 and self.player_name == "coquinha"):
+            other_player = game.player2 if self.player_number == 1 else game.player1
+ 
+            
+            velocityx = -5 if self.flip else 5
+            game.particles.append(Particles(game,'sheldon', [other_player.rect().centerx -12, other_player.rect().centery - 20],self.player_number, [0.2, 0],0, False))
+            game.particles.append(Particles(game,'sheldon', [other_player.rect().centerx +12, other_player.rect().centery - 20],self.player_number, [-0.2, 0],0, True))
+            self.stamina = 0
+            self.especial_bar.update()
+            self.especial_frame = True
+
+
+        
+    
