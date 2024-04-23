@@ -103,6 +103,7 @@ class Player(PhysicsEntity):
         self.player_number = player_number
         self.heath_bar = HealthBar(game, self, player_number)
         self.especial_bar = EspecialBar(game,self,player_number)
+        self.impact_force = 2
 
     def update(
         self,
@@ -122,10 +123,17 @@ class Player(PhysicsEntity):
         other_rect = other_player.rect()
         if abs(entity_rect.left - other_rect.right) < 3 or abs(entity_rect.right - other_rect.left) < 3:
             if other_player.melee_attack and abs(entity_rect.top - other_rect.top) < 8 and not self.block:
-                self.health = self.health - 0.1
-                other_player.stamina = min(100,other_player.stamina + 1)
+                self.health = self.health - 1
+                other_player.stamina = min(100,other_player.stamina + 3)
+                if other_player.flip:
+                   self.velocity[0] -= self.impact_force/10
+                else:
+                   self.velocity[0] += self.impact_force/10
                 self.heath_bar.update()
                 other_player.especial_bar.update()
+                
+                
+                
         self.anim_offset = (-13,-30)
         if entity_rect.colliderect(other_rect):
             if frame_movement[0] > 0 and entity_rect.bottom > other_rect.top + offset_bottom:
@@ -195,6 +203,10 @@ class Player(PhysicsEntity):
                         40,
                     )
             if new_rect.collidepoint(particle.pos) and particle.player_number != self.player_number:
+                if other_player.flip:
+                   self.velocity[0] -= self.impact_force/1.2
+                else:
+                   self.velocity[0] += self.impact_force/1.2
                 self.health = self.health - 10
                 self.heath_bar.update()
         
