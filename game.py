@@ -3,6 +3,7 @@ import pygame
 from scripts.utils import load_image, load_images, Animation
 from scripts.entities import PhysicsEntity, Player
 from scripts.tilemap import Tilemap
+from Screen import Screen
 
 
 class Game:
@@ -10,7 +11,10 @@ class Game:
         pygame.init()
 
         pygame.display.set_caption("ITA Fight Club")
-        self.screen = pygame.display.set_mode((640, 480))
+        self.play_again = False
+        self.width = 640
+        self.height = 480
+        self.screen = pygame.display.set_mode((self.width, self.height))
         self.display = pygame.Surface((320, 240))
         self.img = pygame.image.load("data/images/clouds/cloud_1.png")
         self.img.set_colorkey((0, 0, 0))
@@ -61,6 +65,12 @@ class Game:
         self.scroll_2 = [0, 0]
 
     def run(self):
+        Tela = Screen(self.width, self.height)
+        if (self.play_again):
+            self.play_again = False
+            Tela.SelectionScreen(self.screen)
+        else:
+            Tela.InitialScreen(self.screen)
         while True:
             self.display.blit(self.assets["background"], (0, 0))
 
@@ -163,6 +173,8 @@ class Game:
             )
             pygame.display.update()
             self.clock.tick(60)
-
+        
+        
+        
 
 Game().run()
