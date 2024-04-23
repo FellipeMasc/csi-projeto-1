@@ -60,6 +60,8 @@ class PhysicsEntity:
         for rect in tilemap.physics_rects_around(self.pos):
             if entity_rect.colliderect(rect):
                 if frame_movement[1] > 0:
+                    print("Oi")
+                    print(entity_rect.bottom, rect.top)
                     entity_rect.bottom = rect.top
                     self.collisions["down"] = True
                 if frame_movement[1] < 0:
@@ -227,5 +229,4 @@ class Player(PhysicsEntity):
     def render(self, surf, offset=(0, 0)):
         self.heath_bar.render(surf)
         self.especial_bar.render(surf)
-        return super().render(surf, (offset[0], offset[1] + 17))
-        # return super().render(surf, (offset[0], offset[1] - 5))
+        return super().render(surf, (offset[0], offset[1] ))

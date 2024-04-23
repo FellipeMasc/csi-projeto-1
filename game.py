@@ -41,8 +41,8 @@ class Game:
             "player/farol/especial": Animation(load_images("entities/player/farol/especial"),img_dur=6, loop=False),
         }
 
-        self.player1 = Player(self, (50, 50), (8, 15),1, "farol")
-        self.player2 = Player(self, (100, 50), (8, 15),2, "farol")
+        self.player1 = Player(self, (50, 50), (8, 40),1, "farol")
+        self.player2 = Player(self, (100, 50), (8, 40),2, "farol")
 
         self.tilemap = Tilemap(self, tile_size=16)
         self.particles = []
