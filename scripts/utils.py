@@ -4,15 +4,25 @@ import os
 
 BASE_IMG_PATH = 'data/images/'
 
-def load_image(path):
+def load_image(path, resize=False):
+    if resize:
+        img = pygame.image.load(BASE_IMG_PATH + path)
+        img = pygame.transform.scale(img, (35, 45))
+    
+        # Se sua imagem originalmente tem transparência
+        img_red = img.convert_alpha()
+        return img_red
+    
     img = pygame.image.load(BASE_IMG_PATH + path).convert()
     img.set_colorkey((0,0,0))
     return img
 
+
 def load_images(path):
     images = []
+    resize = True if path[0:15] == "entities/player" or path[0:17] == "particles/sheldon" else False
     for img_name in sorted(os.listdir(BASE_IMG_PATH + path)):
-        images.append(load_image(path + '/' + img_name))
+        images.append(load_image(path + '/' + img_name, resize))
     return images
 
 class Animation:
@@ -67,14 +77,13 @@ class EspecialBar:
 
     def update(self):
         self.width = int((self.player.stamina / 100) * 100)
-        print(self.width, self.player.stamina)
 
     def render(self, surf):
         pygame.draw.rect(surf, (0, 0, 250), (self.x, self.y, self.width, self.height))
 
 
 class Particles:
-    def __init__(self, game, p_type,pos, player_number, velocity=[0,0], frame = 0):
+    def __init__(self, game, p_type,pos, player_number, velocity=[0,0], frame = 0, flip = False):
         self.game = game
         self.player_number = player_number
         self.type = p_type
@@ -82,6 +91,7 @@ class Particles:
         self.velocity = list(velocity)
         self.animation = self.game.assets['particle/' + p_type].copy()
         self.animation.frame = frame
+        self.flip = flip
         
     
     def update(self):
@@ -99,7 +109,7 @@ class Particles:
         
     def render(self, surf, offset=(0,0)):
         img = self.animation.img()
-        surf.blit(img,(self.pos[0] - offset[0] - img.get_width() // 2, self.pos[1] - offset[1] - img.get_height() // 2))
+        surf.blit(pygame.transform.flip(img, self.flip, False),(self.pos[0] - offset[0] - img.get_width() // 2, self.pos[1] - offset[1] - img.get_height() // 2))
         
         
         
