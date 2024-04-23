@@ -7,7 +7,7 @@ BASE_IMG_PATH = 'data/images/'
 def load_image(path, resize=False):
     if resize:
         img = pygame.image.load(BASE_IMG_PATH + path)
-        img = pygame.transform.scale(img, (48, 36))
+        img = pygame.transform.scale(img, (35, 45))
     
         # Se sua imagem originalmente tem transparência
         img_red = img.convert_alpha()

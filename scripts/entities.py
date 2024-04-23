@@ -18,7 +18,7 @@ class PhysicsEntity:
         }
 
         self.action = ""
-        self.anim_offset = (-3, -3)
+        self.anim_offset = (-10, -30)
         self.flip = False
         self.set_action("idle")
 
@@ -60,8 +60,6 @@ class PhysicsEntity:
         for rect in tilemap.physics_rects_around(self.pos):
             if entity_rect.colliderect(rect):
                 if frame_movement[1] > 0:
-                    print("Oi")
-                    print(entity_rect.bottom, rect.top)
                     entity_rect.bottom = rect.top
                     self.collisions["down"] = True
                 if frame_movement[1] < 0:
@@ -128,7 +126,7 @@ class Player(PhysicsEntity):
                 other_player.stamina = min(100,other_player.stamina + 1)
                 self.heath_bar.update()
                 other_player.especial_bar.update()
-
+        self.anim_offset = (-13,-30)
         if entity_rect.colliderect(other_rect):
             if frame_movement[0] > 0 and entity_rect.bottom > other_rect.top + offset_bottom:
                 entity_rect.right = other_rect.left
@@ -139,20 +137,17 @@ class Player(PhysicsEntity):
                 self.collisions["left"] = True
                 self.pos[0] = entity_rect.x
             if frame_movement[1] > 0 and entity_rect.top < other_rect.top:
-                print("bottom",entity_rect.bottom, other_rect.bottom)
-                print("top",entity_rect.top, other_rect.top)
                 entity_rect.bottom = other_rect.top
                 self.collisions["down"] = True
-                print("antes", self.pos[1], other_player.pos[1])
                 self.pos[1] = entity_rect.y
-                print("depois", self.pos[1], other_player.pos[1])
+                self.anim_offset = (-10,-60);
             if frame_movement[1] < 0:
                 self.collisions["up"] = True
 
         self.air_time += 1
         if self.collisions["down"]:
             self.air_time = 0
-            self.jumps = 1
+            self.jumps = 2
         self.wall_slide = False
         if (self.collisions["right"] or self.collisions["left"]) and self.air_time > 4:
             self.wall_slide = True
@@ -193,7 +188,13 @@ class Player(PhysicsEntity):
             self.velocity[0] = min(self.velocity[0] + 0.1, 0)
             
         for particle in self.game.particles:
-            if self.rect().collidepoint(particle.pos) and particle.player_number != self.player_number:
+            new_rect = pygame.Rect(
+                        self.rect().left,
+                        self.rect().top - 40,
+                        8,
+                        40,
+                    )
+            if new_rect.collidepoint(particle.pos) and particle.player_number != self.player_number:
                 self.health = self.health - 10
                 self.heath_bar.update()
         
@@ -220,7 +221,7 @@ class Player(PhysicsEntity):
     def especial_attack(self, game):
         if(self.stamina == 100):
             velocityx = -5 if self.flip else 5
-            game.particles.append(Particles(game,'particle', [self.rect().centerx, self.rect().centery - 20],self.player_number, [velocityx, 0]))
+            game.particles.append(Particles(game,'particle', [self.rect().centerx, self.rect().centery - 30],self.player_number, [velocityx, 0]))
             self.stamina = 0
             self.especial_bar.update()
             self.especial_frame = True

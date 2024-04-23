@@ -41,10 +41,10 @@ class Game:
             "player/farol/especial": Animation(load_images("entities/player/farol/especial"),img_dur=6, loop=False),
         }
 
-        self.player1 = Player(self, (50, 50), (8, 40),1, "farol")
-        self.player2 = Player(self, (100, 50), (8, 40),2, "farol")
+        self.player1 = Player(self, (50, 50), (8, 15),1, "farol")
+        self.player2 = Player(self, (100, 50), (8, 15),2, "farol")
 
-        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap = Tilemap(self)
         self.particles = []
 
         self.scroll_1 = [0, 0]
@@ -54,12 +54,12 @@ class Game:
         while True:
             self.display.blit(self.assets["background"], (0, 0))
 
-            self.scroll_1[0] += (self.player1.rect().centerx - self.display.get_width() / 2 - self.scroll_1[0]) / 30
-            self.scroll_1[1] += (self.player1.rect().centery - self.display.get_height() / 2 - self.scroll_1[1]) / 30
-            self.scroll_2[0] += (self.player2.rect().centerx - self.display.get_width() / 2 - self.scroll_2[0]) / 30
-            self.scroll_2[1] += (self.player2.rect().centery - self.display.get_height() / 2 - self.scroll_2[1]) / 30
+            # self.scroll_1[0] += (self.player1.rect().centerx - self.display.get_width() / 2 - self.scroll_1[0]) / 30
+            self.scroll_1[1] += (self.player1.rect().centery - self.display.get_height() / 3 - self.scroll_1[1]) / 10
+            # self.scroll_2[0] += (self.player2.rect().centerx - self.display.get_width() / 2 - self.scroll_2[0]) / 30
+            self.scroll_2[1] += (self.player2.rect().centery - self.display.get_height() / 3  - self.scroll_2[1]) / 10
             render_scroll = (
-                int(min(self.scroll_1[0], self.scroll_2[0])),
+                0,
                 int(min(self.scroll_1[1], self.scroll_2[1])),
             )
             self.tilemap.render(self.display, offset=render_scroll)
@@ -121,9 +121,9 @@ class Game:
                         self.block_p1 = True
                     if event.key == pygame.K_v:
                         self.block_p2 = True
-                    if event.key == pygame.K_f:
-                        self.player1.dash()
                     if event.key == pygame.K_m:
+                        self.player1.dash()
+                    if event.key == pygame.K_f:
                         self.player2.dash()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
