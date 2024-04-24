@@ -6,11 +6,13 @@ from scripts.tilemap import Tilemap
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, player1_name, player2_name, map_name, screen):
         pygame.init()
-
+        self.player1_name = player1_name
+        self.player2_name = player2_name
+        self.map_name = map_name
         pygame.display.set_caption("ITA Fight Club")
-        self.screen = pygame.display.set_mode((1280, 960))
+        self.screen = screen
         self.display = pygame.Surface((320, 240))
         self.img = pygame.image.load("data/images/clouds/cloud_1.png")
         self.img.set_colorkey((0, 0, 0))
@@ -18,7 +20,6 @@ class Game:
         self.winner = None
         self.movement_p1 = [False, False]
         self.movement_p2 = [False, False]
-        # punch, kick, special, cokespecial
         self.attack_p1 = [False, False, False, False]
         self.attack_p2 = [False, False, False, False]
         self.block_p1 = False
@@ -63,15 +64,16 @@ class Game:
 
         self.sfx = {
             'dash':pygame.mixer.Sound("data/sfx/dash.wav"),
-            'especial/coquinha':pygame.mixer.Sound("data/sfx/coquinha-especial-plus.wav"),
-            'maromba':pygame.mixer.Sound("data/sfx/quertomarbomba.mp3")
+            'especial/coquinha':pygame.mixer.Sound("data/sfx/coquinha-especial.wav"),
+            'maromba':pygame.mixer.Sound("data/sfx/quertomarbomba.mp3"),
+            'especial/farol':pygame.mixer.Sound("data/sfx/farol-especial.wav")
         }
         
         self.sfx["especial/coquinha"].set_volume(0.3)
         self.sfx["maromba"].set_volume(0.1)
         
-        self.player1 = Player(self, (50, 50), (8, 15),1, "coquinha")
-        self.player2 = Player(self, (100, 50), (8, 15),2, "calabresa")
+        self.player1 = Player(self, (50, 50), (8, 15),1, self.player1_name)
+        self.player2 = Player(self, (100, 50), (8, 15),2, self.player2_name)
 
         self.tilemap = Tilemap(self)
         self.particles = []
@@ -79,16 +81,18 @@ class Game:
         self.scroll_1 = [0, 0]
         self.scroll_2 = [0, 0]
 
+    
+    def cleanup(self):
+        pygame.mixer.music.stop()  
+        pygame.mixer.quit()  
+        
     def run(self):
         pygame.mixer.music.load("data/sfx/quertomarbomba.mp3")
         pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
         while True:
             self.display.blit(self.assets["salaonegro"], (0, 0))
-
-            # self.scroll_1[0] += (self.player1.rect().centerx - self.display.get_width() / 2 - self.scroll_1[0]) / 30
             self.scroll_1[1] += (self.player1.rect().centery - self.display.get_height() / 3 - self.scroll_1[1]) / 10
-            # self.scroll_2[0] += (self.player2.rect().centerx - self.display.get_width() / 2 - self.scroll_2[0]) / 30
             self.scroll_2[1] += (self.player2.rect().centery - self.display.get_height() / 3  - self.scroll_2[1]) / 10
             render_scroll = (
                 0,
@@ -197,6 +201,7 @@ class Game:
             )
             pygame.display.update()
             self.clock.tick(60)
-
-
-Game().run()
+        
+    def __del__(self):
+        print("Instância deletada!")
+        

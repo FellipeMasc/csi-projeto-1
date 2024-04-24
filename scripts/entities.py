@@ -252,7 +252,7 @@ class Player(PhysicsEntity):
         return super().render(surf, (offset[0], offset[1] ))
     
     def plus(self,game):
-        if(self.stamina == 0 and self.player_name == "coquinha"):
+        if(self.stamina == 100 and self.player_name == "coquinha"):
             other_player = game.player2 if self.player_number == 1 else game.player1
  
             
