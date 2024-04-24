@@ -15,7 +15,7 @@ class Game:
         self.img = pygame.image.load("data/images/clouds/cloud_1.png")
         self.img.set_colorkey((0, 0, 0))
         self.clock = pygame.time.Clock()
-
+        self.winner = None
         self.movement_p1 = [False, False]
         self.movement_p2 = [False, False]
         # punch, kick, special, cokespecial
@@ -61,6 +61,15 @@ class Game:
             "player/calabresa/especial": Animation(load_images("entities/player/calabresa/especial"),img_dur=6, loop=False),
         }
 
+        self.sfx = {
+            'dash':pygame.mixer.Sound("data/sfx/dash.wav"),
+            'especial/coquinha':pygame.mixer.Sound("data/sfx/coquinha-especial-plus.wav"),
+            'maromba':pygame.mixer.Sound("data/sfx/quertomarbomba.mp3")
+        }
+        
+        self.sfx["especial/coquinha"].set_volume(0.3)
+        self.sfx["maromba"].set_volume(0.1)
+        
         self.player1 = Player(self, (50, 50), (8, 15),1, "coquinha")
         self.player2 = Player(self, (100, 50), (8, 15),2, "calabresa")
 
@@ -71,6 +80,9 @@ class Game:
         self.scroll_2 = [0, 0]
 
     def run(self):
+        pygame.mixer.music.load("data/sfx/quertomarbomba.mp3")
+        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.play(-1)
         while True:
             self.display.blit(self.assets["salaonegro"], (0, 0))
 
@@ -171,6 +183,14 @@ class Game:
                     if event.key == pygame.K_v:
                         self.block_p2 = False
 
+            if(self.player1.die):
+                self.winner = 2
+                break
+            
+            if(self.player2.die):
+                self.winner = 1;
+                break
+                
             self.screen.blit(
                 pygame.transform.scale(self.display, self.screen.get_size()),
                 (0, 0),
