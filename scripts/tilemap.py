@@ -33,7 +33,7 @@ class Tilemap:
             18
         ):
             self.tilemap[str(i) + ";12"] = {
-                "type": "grass",
+                "type": "stone",
                 "variant": 1,
                 "pos": (
                     i,
