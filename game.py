@@ -33,8 +33,12 @@ class Game:
             "background": load_image("background.png"),
             "lago": load_image("lago.jpeg"),
             "salaonegro": load_image("salaonegro.jpeg"),
-            # "background": load_image("background.png"),
+            "maromba": load_image("maromba.jpeg"),
             "particle/particle": Animation(load_images("particles/particle"), img_dur=6, loop=False),
+            "particle/calabresa": Animation(load_images("particles/calabresa"), img_dur=7, loop=False),
+            "particle/coquinha": Animation(load_images("particles/coquinha"), img_dur=6, loop=False),
+            "particle/rinha": Animation(load_images("particles/rinha"), img_dur=7, loop=False),
+            "particle/farol": Animation(load_images("particles/farol"), img_dur=7, loop=False),
             "particle/sheldon": Animation(load_images("particles/sheldon"), img_dur=6, loop=False),
             "player/farol/idle": Animation(load_images("entities/player/farol/idle"), img_dur=6),
             "player/farol/run": Animation(load_images("entities/player/farol/run"), img_dur=4),
@@ -45,6 +49,7 @@ class Game:
             "player/farol/block": Animation(load_images("entities/player/farol/block")),
             "player/farol/especial": Animation(load_images("entities/player/farol/especial"),img_dur=6, loop=False),
             "player/coquinha/idle": Animation(load_images("entities/player/coquinha/idle"), img_dur=6),
+            "player/coquinha/plus": Animation(load_images("entities/player/coquinha/plus"), img_dur=6, loop=False),
             "player/coquinha/run": Animation(load_images("entities/player/coquinha/run"), img_dur=4),
             "player/coquinha/jump": Animation(load_images("entities/player/coquinha/jump")),
             "player/coquinha/punch": Animation(load_images("entities/player/coquinha/punch")),
@@ -64,13 +69,24 @@ class Game:
 
         self.sfx = {
             'dash':pygame.mixer.Sound("data/sfx/dash.wav"),
+            'jump':pygame.mixer.Sound("data/sfx/jump.wav"),
             'especial/coquinha':pygame.mixer.Sound("data/sfx/coquinha-especial.wav"),
-            'maromba':pygame.mixer.Sound("data/sfx/quertomarbomba.mp3"),
-            'especial/farol':pygame.mixer.Sound("data/sfx/farol-especial.wav")
+            'plus/coquinha':pygame.mixer.Sound("data/sfx/coquinha-especial-plus.wav"),
+            'ataque/coquinha':pygame.mixer.Sound("data/sfx/coquinha-ataque.wav"),
+            'especial/farol':pygame.mixer.Sound("data/sfx/farol-especial.wav"),
+            'ataque/farol':pygame.mixer.Sound("data/sfx/farol-ataque.wav"),
+            'especial/calabresa':pygame.mixer.Sound("data/sfx/calabresa-especial.wav"),
+            'ataque/calabresa':pygame.mixer.Sound("data/sfx/calabresa-ataque.wav"),
+            'especial/rinha':pygame.mixer.Sound("data/sfx/rinha-especial.wav"),
+            'ataque/rinha':pygame.mixer.Sound("data/sfx/rinha-ataque.wav")
+            
         }
         
-        self.sfx["especial/coquinha"].set_volume(0.3)
-        self.sfx["maromba"].set_volume(0.1)
+        for sfx in self.sfx:
+            if sfx[0:8] == 'especial' or sfx[0:4] == 'plus':
+                self.sfx[sfx].set_volume(0.6)
+            else: self.sfx[sfx].set_volume(0.07)
+            
         
         self.player1 = Player(self, (50, 50), (8, 15),1, self.player1_name)
         self.player2 = Player(self, (100, 50), (8, 15),2, self.player2_name)
@@ -88,10 +104,10 @@ class Game:
         
     def run(self):
         pygame.mixer.music.load("data/sfx/quertomarbomba.mp3")
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0.01)
         pygame.mixer.music.play(-1)
         while True:
-            self.display.blit(self.assets["salaonegro"], (0, 0))
+            self.display.blit(self.assets["maromba"], (0, 0))
             self.scroll_1[1] += (self.player1.rect().centery - self.display.get_height() / 3 - self.scroll_1[1]) / 10
             self.scroll_2[1] += (self.player2.rect().centery - self.display.get_height() / 3  - self.scroll_2[1]) / 10
             render_scroll = (
@@ -154,17 +170,17 @@ class Game:
                     if event.key == pygame.K_q:
                         self.player2.plus(self)
                     if event.key == pygame.K_UP:
-                        self.player1.jump()
+                        self.player1.jump(self)
                     if event.key == pygame.K_w:
-                        self.player2.jump()
+                        self.player2.jump(self)
                     if event.key == pygame.K_n:
                         self.block_p1 = True
                     if event.key == pygame.K_v:
                         self.block_p2 = True
                     if event.key == pygame.K_m:
-                        self.player1.dash()
+                        self.player1.dash(self)
                     if event.key == pygame.K_f:
-                        self.player2.dash()
+                        self.player2.dash(self)
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement_p1[0] = False
@@ -203,5 +219,5 @@ class Game:
             self.clock.tick(60)
         
     def __del__(self):
-        print("Instância deletada!")
+        print("Instância deletada")
         

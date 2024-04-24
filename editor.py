@@ -16,18 +16,18 @@ class Editor:
         else:
             tela.InitialScreen(self.screen)
         
-        # game = Game(tela.P1sel, tela.P2sel, tela.map, self.screen)
-        game = Game("coquinha", "farol", "maromba", self.screen)
+        game = Game(tela.P1sel, tela.P2sel, tela.map, self.screen)
+        # game = Game("coquinha", "farol", "maromba", self.screen)
         
         game.run()
         
-        # tela.EndScreen(self.screen, game.winner)
+        tela.EndScreen(self.screen, game.winner)
         
-        # game.cleanup()
-        # del game
-        # if(tela.play_again): 
-        #     self.play_again = True
-        #     self.run()
+        game.cleanup()
+        del game
+        if(tela.play_again): 
+            self.play_again = True
+            self.run()
 
 editor = Editor()
 editor.run()

@@ -106,6 +106,8 @@ class Player(PhysicsEntity):
         self.impact_force = 2
         self.player_name = player_name
         self.die = False
+        self.plus_on = False
+        
 
     def update(
         self,
@@ -124,7 +126,9 @@ class Player(PhysicsEntity):
         entity_rect = self.rect()
         other_rect = other_player.rect()
         if abs(entity_rect.left - other_rect.right) < 3 or abs(entity_rect.right - other_rect.left) < 3:
-            if other_player.melee_attack and abs(entity_rect.top - other_rect.top) < 8 and not self.block:
+            turned_left = not self.flip and not other_player.flip and (self.pos[0] > self.pos[0])
+            turned_right = self.flip and other_player.flip and (self.pos[0] < self.pos[0])
+            if other_player.melee_attack and abs(entity_rect.top - other_rect.top) < 8 and not self.block and not turned_left and not turned_right:
                 self.health = self.health - 1
                 other_player.stamina = min(100,other_player.stamina + 3)
                 if other_player.flip:
@@ -175,12 +179,15 @@ class Player(PhysicsEntity):
             self.set_action("run")
         elif attack[0]:
             self.set_action("punch")
+            self.game.sfx['ataque/'+self.player_name].play(0)
         elif attack[1]:
             self.set_action("kick")
+            self.game.sfx['ataque/'+self.player_name].play(0)
         elif block:
             self.set_action("block")
         elif self.especial_frame and not self.animation.done:
-            self.set_action("especial")
+            action = "plus" if self.plus_on else "especial"
+            self.set_action(action)
         else:
             self.especial_frame = False
             self.set_action("idle")
@@ -223,27 +230,30 @@ class Player(PhysicsEntity):
         self.block = action == "block"
         return super().set_action(action)
 
-    def jump(self):
+    def jump(self, game):
         if self.jumps:
             self.velocity[1] = -3
             self.jumps -= 1
             self.air_time = 5
+            game.sfx['jump'].play(0)
 
-    def dash(self):
+    def dash(self, game):
         if not self.dashing:
             if self.flip:
                 self.dashing = -60
             else:
                 self.dashing = 60
-                
+            game.sfx['dash'].play(0)
                 
     def especial_attack(self, game):
         if(self.stamina == 100):
+            game.sfx['especial/'+self.player_name].play(0)
             velocityx = -5 if self.flip else 5
-            game.particles.append(Particles(game,'particle', [self.rect().centerx, self.rect().centery - 30],self.player_number, [velocityx, 0]))
+            game.particles.append(Particles(game,self.player_name, [self.rect().centerx, self.rect().centery - 30],self.player_number, [velocityx, 0]))
             self.stamina = 0
             self.especial_bar.update()
             self.especial_frame = True
+            self.plus_on = False
             
 
     def render(self, surf, offset=(0, 0)):
@@ -256,12 +266,13 @@ class Player(PhysicsEntity):
             other_player = game.player2 if self.player_number == 1 else game.player1
  
             
-            game.sfx['especial/coquinha'].play(0)
+            game.sfx['plus/coquinha'].play(0)
             game.particles.append(Particles(game,'sheldon', [other_player.rect().centerx -12, other_player.rect().centery - 20],self.player_number, [0.2, 0],0, False))
             game.particles.append(Particles(game,'sheldon', [other_player.rect().centerx +12, other_player.rect().centery - 20],self.player_number, [-0.2, 0],0, True))
             self.stamina = 0
             self.especial_bar.update()
             self.especial_frame = True
+            self.plus_on = True
 
 
         
