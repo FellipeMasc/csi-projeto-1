@@ -105,6 +105,7 @@ class Player(PhysicsEntity):
         self.especial_bar = EspecialBar(game,self,player_number)
         self.impact_force = 2
         self.player_name = player_name
+        self.die = False
 
     def update(
         self,
@@ -132,6 +133,7 @@ class Player(PhysicsEntity):
                    self.velocity[0] += self.impact_force/10
                 self.heath_bar.update()
                 other_player.especial_bar.update()
+                if(self.health <= 0): self.die = True
                 
                 
                 
@@ -162,7 +164,8 @@ class Player(PhysicsEntity):
             self.wall_slide = True
             self.velocity[1] = min(self.velocity[1], 0.5)
             
-            
+        if(self.air_time > 150):
+            self.die = True
         if self.air_time > 4:
             if attack[0] or attack[1]:
                 self.set_action("jump_attack")
@@ -212,6 +215,7 @@ class Player(PhysicsEntity):
                 self.health = self.health - 5
                 self.heath_bar.update()
                 self.game.particles.remove(particle)
+                if(self.health <= 0): self.die = True
         
 
     def set_action(self, action):
@@ -252,7 +256,7 @@ class Player(PhysicsEntity):
             other_player = game.player2 if self.player_number == 1 else game.player1
  
             
-            velocityx = -5 if self.flip else 5
+            game.sfx['especial/coquinha'].play(0)
             game.particles.append(Particles(game,'sheldon', [other_player.rect().centerx -12, other_player.rect().centery - 20],self.player_number, [0.2, 0],0, False))
             game.particles.append(Particles(game,'sheldon', [other_player.rect().centerx +12, other_player.rect().centery - 20],self.player_number, [-0.2, 0],0, True))
             self.stamina = 0
