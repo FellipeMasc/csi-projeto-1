@@ -43,7 +43,7 @@ class Screen:
         return button1_rect, button2_rect
     
     def draw_selection_buttons(self, screen):
-        button_width, button_height = 100, 100
+        button_width, button_height = 180, 180
         button_spacing = 20
         button_image1 = pygame.image.load("imagens_tela_inicial/coquinha.jpg")
         button_image1 = pygame.transform.scale(button_image1, (button_width, button_height))
@@ -194,6 +194,20 @@ class Screen:
         button_selected = []
         P1_buttons = [0, 4, 2, 6]
         P2_buttons = [3, 5, 1, 7]
+        
+        self.sfx = {
+            'coquinha':pygame.mixer.Sound("data/sfx/coquinha-especial-plus.wav"),
+            'calabresa':pygame.mixer.Sound("data/sfx/calabresa-inicio.wav"),
+            'rinha':pygame.mixer.Sound("data/sfx/rinha-inicio.wav"),
+            'farol':pygame.mixer.Sound("data/sfx/farol-inicio.wav"),
+        }
+        
+        self.sfx['coquinha'].set_volume(0.4)
+        self.sfx['calabresa'].set_volume(0.4)
+        self.sfx['rinha'].set_volume(0.4)
+        self.sfx['farol'].set_volume(0.4)
+        
+        
         for _ in range(len(button_rects)):
             button_selected.append(False)
         while running:
@@ -212,41 +226,49 @@ class Screen:
                             button_selected[i] = False
                         button_selected[0] = True
                         self.P1sel = "coquinha"
+                        self.sfx['coquinha'].play(0)
                     elif button_rects[5].collidepoint(mouse_pos):
                         for i in P2_buttons:
                             button_selected[i] = False
                         button_selected[5] = True
                         self.P2sel = "coquinha"
+                        self.sfx['coquinha'].play(0)
                     elif button_rects[4].collidepoint(mouse_pos):
                         for i in P1_buttons:
                             button_selected[i] = False
                         button_selected[4] = True
                         self.P1sel = "calabresa"
+                        self.sfx['calabresa'].play(0)
                     elif button_rects[1].collidepoint(mouse_pos):
                         for i in P2_buttons:
                             button_selected[i] = False
                         button_selected[1] = True
                         self.P2sel = "calabresa"
+                        self.sfx['calabresa'].play(0)
                     elif button_rects[2].collidepoint(mouse_pos):
                         for i in P1_buttons:
                             button_selected[i] = False
                         button_selected[2] = True
                         self.P1sel = "farol"
+                        self.sfx['farol'].play(0)
                     elif button_rects[7].collidepoint(mouse_pos):
                         for i in P2_buttons:
                             button_selected[i] = False
                         button_selected[7] = True
                         self.P2sel = "farol"
+                        self.sfx['farol'].play(0)
                     elif button_rects[6].collidepoint(mouse_pos):
                         for i in P1_buttons:
                             button_selected[i] = False
                         button_selected[6] = True
                         self.P1sel = "rinha"
+                        self.sfx['rinha'].play(0)
                     elif button_rects[3].collidepoint(mouse_pos):
                         for i in P2_buttons:
                             button_selected[i] = False
                         button_selected[3] = True
                         self.P2sel = "rinha"
+                        self.sfx['rinha'].play(0)
             
             button_rects = self.draw_selection_buttons(screen)
             

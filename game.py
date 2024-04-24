@@ -30,10 +30,9 @@ class Game:
             "large_decor": load_images("tiles/large_decor"),
             "stone": load_images("tiles/stone"),
             "player": load_image("entities/player.png"),
-            "background": load_image("background.png"),
             "lago": load_image("lago.jpeg"),
             "salaonegro": load_image("salaonegro.jpeg"),
-            "maromba": load_image("maromba.jpeg"),
+            "maromba": load_image("maromba.png"),
             "particle/particle": Animation(load_images("particles/particle"), img_dur=6, loop=False),
             "particle/calabresa": Animation(load_images("particles/calabresa"), img_dur=7, loop=False),
             "particle/coquinha": Animation(load_images("particles/coquinha"), img_dur=6, loop=False),
@@ -65,6 +64,14 @@ class Game:
             "player/calabresa/kick": Animation(load_images("entities/player/calabresa/kick")),
             "player/calabresa/block": Animation(load_images("entities/player/calabresa/block")),
             "player/calabresa/especial": Animation(load_images("entities/player/calabresa/especial"),img_dur=6, loop=False),
+            "player/rinha/idle": Animation(load_images("entities/player/rinha/idle"), img_dur=6),
+            "player/rinha/run": Animation(load_images("entities/player/rinha/run"), img_dur=4),
+            "player/rinha/jump": Animation(load_images("entities/player/rinha/jump")),
+            "player/rinha/punch": Animation(load_images("entities/player/rinha/punch")),
+            "player/rinha/jump_attack": Animation(load_images("entities/player/rinha/kick")),
+            "player/rinha/kick": Animation(load_images("entities/player/rinha/kick")),
+            "player/rinha/block": Animation(load_images("entities/player/rinha/block")),
+            "player/rinha/especial": Animation(load_images("entities/player/rinha/especial"),img_dur=6, loop=False),
         }
 
         self.sfx = {
