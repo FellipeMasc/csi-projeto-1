@@ -3,6 +3,7 @@ import sys
 
 class Screen:
     def __init__(self, width, height):
+        pygame.init()
         self.width = width
         self.height = height
         self.black = (0, 0, 0)
@@ -277,6 +278,7 @@ class Screen:
                     pygame.draw.rect(screen, self.red, button_rects[i], 3)
 
             if self.P1sel != "" and self.P2sel != "":
+                pygame.time.delay(3000)
                 self.MapScreen(screen)
                 running = False
 
@@ -287,7 +289,7 @@ class Screen:
                 for rect in button_rects:
                     if rect.collidepoint(pygame.mouse.get_pos()):
                         pygame.draw.rect(screen, self.green, rect, 3)
-
+                        
             # Atualizar a tela
             pygame.display.flip()
 
@@ -335,7 +337,8 @@ class Screen:
         mouse_over_button1 = False
         mouse_over_button2 = False
         running =  True
-
+        button1_rect, button2_rect = self.draw_initial_buttons(screen)
+        
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -398,7 +401,7 @@ class Screen:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     if button1_rect.collidepoint(mouse_pos):
-                        self.map = "salao_negro"
+                        self.map = "salaonegro"
                         button1_selected = True
                         button2_selected = False
                         button3_selected = False

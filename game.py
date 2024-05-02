@@ -111,10 +111,10 @@ class Game:
         
     def run(self):
         pygame.mixer.music.load("data/sfx/quertomarbomba.mp3")
-        pygame.mixer.music.set_volume(0.01)
+        pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
         while True:
-            self.display.blit(self.assets["maromba"], (0, 0))
+            self.display.blit(self.assets[self.map_name], (0, 0))
             self.scroll_1[1] += (self.player1.rect().centery - self.display.get_height() / 3 - self.scroll_1[1]) / 10
             self.scroll_2[1] += (self.player2.rect().centery - self.display.get_height() / 3  - self.scroll_2[1]) / 10
             render_scroll = (

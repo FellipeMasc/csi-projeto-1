@@ -15,9 +15,11 @@ class Editor:
             tela.SelectionScreen(self.screen)
         else:
             tela.InitialScreen(self.screen)
+
+        
+
         
         game = Game(tela.P1sel, tela.P2sel, tela.map, self.screen)
-        # game = Game("coquinha", "farol", "maromba", self.screen)
         
         game.run()
         
